@@ -6,7 +6,7 @@
 
 <div align="center">
 	<p>
-		<img alt="white-lists-bypass" src="./docs/white-lists-bypass.png" />
+		<img alt="white-lists-bypass-banner" src="./docs/white-lists-bypass-banner.png" />
 	</p>
 </div>
 
