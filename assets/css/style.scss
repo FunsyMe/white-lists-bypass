@@ -1,0 +1,143 @@
+body {
+  background-color: #060606 !important;
+  color: #e6edf3 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif !important;
+}
+
+.container-lg, .wrapper, .site-footer {
+  background-color: #060606 !important;
+  color: #e6edf3 !important;
+  border: none !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #f0f6fc !important;
+  border-bottom: 1px solid #1c1c1c !important;
+  padding-bottom: 0.3em !important;
+  margin-top: 24px !important;
+  margin-bottom: 16px !important;
+  font-weight: 600 !important;
+}
+
+a {
+  color: #2f81f7 !important;
+  text-decoration: none !important;
+}
+
+a:hover {
+  text-decoration: underline !important;
+}
+
+table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+  margin: 20px 0 !important;
+  background-color: #060606 !important;
+  display: table !important;
+}
+
+table tr {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+table th {
+  background-color: #141414 !important;
+  color: #f0f6fc !important;
+  font-weight: 600 !important;
+  border: 1px solid #242424 !important;
+  padding: 8px 13px !important;
+}
+
+table td {
+  background-color: #0d0d0d !important;
+  color: #e6edf3 !important;
+  border: 1px solid #242424 !important;
+  padding: 8px 13px !important;
+}
+
+table tr:nth-child(even) td {
+  background-color: #080808 !important;
+  color: #e6edf3 !important;
+  border: 1px solid #242424 !important;
+}
+
+code {
+  background-color: #121212 !important;
+  color: #e6edf3 !important;
+  padding: 0.2em 0.4em !important;
+  border-radius: 6px !important;
+  font-size: 85% !important;
+  border: none !important;
+}
+
+.highlight,
+.highlighter-rouge,
+div[class*="language-"] {
+  background-color: #121212 !important;
+  background: #121212 !important;
+  border-radius: 6px !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+pre,
+.highlight pre {
+  background-color: #121212 !important;
+  background: #121212 !important;
+  border: 1px solid #1f1f1f !important;
+  border-radius: 6px !important;
+  padding: 16px !important;
+  overflow: hidden !important;
+  box-shadow: none !important;
+  outline: none !important;
+  -webkit-box-shadow: none !important;
+  margin: 16px 0 !important;
+}
+
+pre code,
+.highlight pre code {
+  background-color: transparent !important;
+  background: transparent !important;
+  color: #e6edf3 !important;
+  padding: 0 !important;
+  font-size: 100% !important;
+  overflow-x: auto !important;
+  display: block !important;
+  border: none !important;
+}
+
+pre span,
+pre code *,
+.highlight * {
+  color: inherit !important;
+  background: transparent !important;
+}
+
+li {
+  color: #e6edf3 !important;
+}
+
+blockquote {
+  color: #a3a3a3 !important;
+  border-left: 4px solid #1f1f1f !important;
+  padding: 0 1em !important;
+  margin: 0 0 16px 0 !important;
+}
+
+header,
+.site-header,
+header h1,
+header a {
+  display: none !important;
+}
+
+.container-lg > h1:first-child,
+.container-lg > h1:first-child a {
+  display: none !important;
+  visibility: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 0 !important;
+}
