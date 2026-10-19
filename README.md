@@ -1,5 +1,16 @@
-## Обход белых списков через Yandex CDN + 3X-UI
-В этой статье мы разберем эффективный способ обхода белых списков с помощью Yandex CDN в связке с популярной панелью управления 3X-UI. Стоит отметить, что я не являюсь создателем этого метода обхода, а лишь предоставляю туториал. Для начала работы понадобится:
+<div align="center">
+
+# Обход белых списков через Yandex CDN + 3X-UI
+
+</div>
+
+<div align="center">
+	<p>
+		<img alt="white-lists-bypass" src="./docs/white-lists-bypass.png" />
+	</p>
+</div>
+
+В этой статье мы разберем эффективный способ обхода белых списков с помощью Yandex CDN в связке с популярной панелью управления 3X-UI. Стоит отметить, что я не являюсь создателем этого метода обхода, а лишь предоставляю туториал. Так-же хочу подчеркнуть то, что если у вас нет базовых знаний команд Linux и/или понимания того, как работают блокировки, то эта статья не для вас. Автор не будет отвечать на вопросы школьного уровня. С порогом входа определилсь, теперь можно приступать. Для начала работы понадобится:
 - VPS-сервер под управлением Debian 12
 - Установленная панель 3X-UI
 - Собственный домен
@@ -7,6 +18,7 @@
 
 ## Подготовка домена и сертификатов
 Для начала перейдите в панель управления вашим доменом и создайте первую A-запись, которая будет указывать на IP-адрес вашего VPS:
+
 | Тип | Имя | Адрес         |
 |-----|-----|---------------|
 | A   | @   | ip_вашего_vps |
@@ -105,3 +117,203 @@
 | CNAME | cdn | CNAME_из_пункта_выше |
 
 После этого подождите от 5 до 60 минут. Это зависит от вашего регистратора домена
+
+## Настройка VPS сервера
+
+### Шаг 1
+Для начала стоит убедиться, что порты 80, 443 и 10000 свободны:
+```bash
+ss -ltnp '( sport = :80 or sport = :443 or sport = :10000 )'
+```
+
+В результате должна быть пустая таблица. Если в таблице есть данные, то освободите занятые порты самостоятельно. Если панель 3X-UI была установлена через Docker, то вам нужно будет перебросить порты для доступа nginx
+
+### Шаг 2
+Теперь нужно установить все необходимые пакеты:
+```bash
+apt update
+apt install -y nginx certbot python3-certbot-nginx nano curl
+```
+
+### Шаг 3
+Следующим действием нужно создать конфиг nginx по пути `/etc/nginx/sites-enabled/vpn-cdn.ru` со следующим содержимым:
+```nginx
+server {
+    listen 80;
+    server_name ваш_домен;
+
+    large_client_header_buffers 8 16k;
+
+    location = /healthz {
+        default_type text/plain;
+        return 200 "ok";
+    }
+
+    location ^~ /xh-tunnel/ {
+        proxy_pass http://127.0.0.1:10000;
+        proxy_http_version 1.1;
+
+        proxy_set_header Host cdn.ваш_домен;
+        proxy_set_header Connection "";
+
+        proxy_buffering off;
+        proxy_request_buffering off;
+        proxy_cache off;
+
+        proxy_read_timeout 3600s;
+        proxy_send_timeout 3600s;
+
+        add_header Cache-Control "no-store" always;
+    }
+
+    location / {
+        return 404;
+    }
+}
+```
+
+Все поля ваш_домен замените на реальный домен. После создания конифга, убедитесь что никаких ошибок в синтаксисе nginx нет:
+```bash
+nginx -t
+```
+
+После выполнения команды, должен быть следующий вывод:
+```txt
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+```
+
+Если в выводе присутсвтую ошибки, то перепроверьте конфиг еще раз
+
+### Шаг 4
+Теперь нужно выпустить сертификат для самого источника:
+```bash
+certbot --nginx -d ваш_домен --redirect
+nginx -t
+systemctl reload nginx
+certbot renew --dry-run
+```
+
+Поле ваш_домен замените на реальный домен. Команда `certbot renew --dry-run` должна выполниться без ошибок
+
+### Шаг 5
+Далее нужнно настроить 3X-UI. Убедитесь, что язык панели является 🇺🇸 English
+- Перейдите во вкладку «Inbounds» и нажмите кнопку «Add Inbound»
+- Заполните все поля следующим образом:
+
+#### Basics
+| Имя                        | Значение       |
+|----------------------------|----------------|
+| Remark                     | vpn-cdn        |
+| Protocol                   | vless          |
+| Address                    | 127.0.0.1      |
+| Share address strategy     | Inbound listen |
+| Subscription sort order    | 1              |
+| Exclude from subscriptions | Выключено      |
+| Disable XTLS flow          | Выключено      |
+| Port                       | 10000          |
+| Total Flow                 | 0              |
+| Traffic Reset              | Never          |
+| Duration                   | —              |
+
+#### Protocol
+| Имя           | Значение        |
+|---------------|-----------------|
+| Decryption    | none            |
+| Encryption    | none            |
+| Generate keys | X25519 (native) |
+
+#### Stream
+| Имя                      | Значение             |
+|--------------------------|----------------------|
+| Transmission             | XHTTP                |
+| Host                     | cdn.ваш_домен        |
+| Path                     | /xh-tunnel/          |
+| Mode                     | packet-up            |
+| Max Upload Size (Byte)   | 4096                 |
+| Max Buffered Upload      | 30                   |
+| Min upload interval (ms) | —                    |
+| Server Max Header Bytes  | 262144               |
+| Padding Bytes            | 100-1000             |
+| Uplink HTTP Method       | GET (packet-up only) |
+| Padding Obfs Mode        | Выключено            |
+| Session Placement        | Default (path)       |
+| Session ID Table         | —                    |
+| Sequence Placement       | Default (path)       |
+| Uplink Data Placement    | header               |
+| Uplink Data Key          | X-Data               |
+| No SSE Header            | Выключено            |
+| XMUX                     | Выключено            |
+| Sockopt                  | Выключено            |
+| QUIC Params              | Выключено            |
+
+#### Security
+| Имя      | Значение |
+|----------|----------|
+| Security | None     |
+
+#### Sniffing
+| Имя     | Значение  |
+|---------|-----------|
+| Enabled | Выключено |
+
+- Перейдите во вкладку «Hosts» и нажмите кнопку «Add Host»
+- Заполните все поля следующим образом:
+
+#### Basics
+| Имя         | Значение          |
+|-------------|-------------------|
+| Remark      | vpn-cdn           |
+| Description | —                 |
+| Inbounds    | vpn-cdn           |
+| Address     | cdn.ваш_домен:443 |
+| Port        | 443               |
+| Tags        | —                 |
+| Nodes       | —                 |
+| Enable      | Включено          |
+
+#### Security
+| Имя                      | Значение      |
+|--------------------------|---------------|
+| Security                 | tls           |
+| SNI                      | cdn.ваш_домен |
+| Use address as SNI       | Выключено     |
+| Keep SNI blank           | Выключено     |
+| Fingerprint              | None          |
+| ALPN                     | —             |
+| Cipher Suites            | —             |
+| Pinned cert SHA-256      | —             |
+| Verify peer cert by name | —             |
+| Allow insecure           | Выключено     |
+| ECH config list          | —             |
+
+#### Advanced
+##### General
+| Имя                  | Значение      |
+|----------------------|---------------|
+| Host header          | cdn.ваш_домен |
+| Path                 | /xh-tunnel/   |
+| VLESS route          | 443           |
+| Exclude from formats | —             |
+
+##### Mux
+| Имя | Значение  |
+|-----|-----------|
+| Mux | Выключено |
+
+##### Sockopt
+| Имя      | Значение  |
+|----------|-----------|
+| Sockopts | Выключено |
+
+##### Final Mask
+| Имя         | Значение  |
+|-------------|-----------|
+| QUIC Params | Выключено |
+
+#### Clash (mihomo)
+| Имя           | Значение  |
+|---------------|-----------|
+| IP version    | —         |
+| Mihomo X25519 | Выключено |
+| Shuffle host  | Выключено |
