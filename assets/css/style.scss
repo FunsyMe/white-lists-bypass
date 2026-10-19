@@ -4,18 +4,25 @@ body {
   background-color: #060606 !important;
   color: #e6edf3 !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif !important;
-}
-
-.container-lg, .wrapper, .site-footer, .markdown-body, body > div {
-  background-color: #060606 !important;
-  color: #e6edf3 !important;
-  border: none !important;
   max-width: 1012px !important;
   margin-right: auto !important;
   margin-left: auto !important;
   padding: 32px 16px !important;
 }
 
+.container-lg, .wrapper, .site-footer, .markdown-body {
+  background-color: #060606 !important;
+  color: #e6edf3 !important;
+  border: none !important;
+}
+
+img {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  margin-right: auto !important;
+  margin-left: auto !important;
+}
 
 h1, h2, h3, h4, h5, h6 {
   color: #f0f6fc !important;
