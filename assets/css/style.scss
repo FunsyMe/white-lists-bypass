@@ -48,6 +48,9 @@ table {
   margin: 20px 0 !important;
   background-color: #060606 !important;
   display: table !important;
+  table-layout: auto !important;
+  word-break: break-all !important;
+  word-wrap: break-word !important;
 }
 
 table tr {
@@ -61,6 +64,7 @@ table th {
   font-weight: 600 !important;
   border: 1px solid #242424 !important;
   padding: 8px 13px !important;
+  white-space: normal !important;
 }
 
 table td {
@@ -68,6 +72,7 @@ table td {
   color: #e6edf3 !important;
   border: 1px solid #242424 !important;
   padding: 8px 13px !important;
+  white-space: normal !important;
 }
 
 table tr:nth-child(even) td {
@@ -88,12 +93,20 @@ code {
 .highlight,
 .highlighter-rouge,
 div[class*="language-"] {
+  background-color: #060606 !important;
+  background: #060606 !important;
+  border: none !important;
+}
+
+.markdown-body .table-wrapper {
   background-color: #121212 !important;
   background: #121212 !important;
   border-radius: 6px !important;
   border: none !important;
-  margin: 0 !important;
+  margin: 20px 0 !important;
   padding: 0 !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
 }
 
 pre,
