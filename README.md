@@ -14,6 +14,10 @@
 - Собственный домен
 - Аккаунт в [Yandex Cloud](https://yandex.cloud/)
 
+Для этой статьи так-же доступна браузерная версия в виде страницы: https://funsyme.github.io/white-lists-bypass/. Заранее буду очень благодарен, если вы поддержите проект:
+- поставите "звездочку" репозиторию в правом верхнем углу на [GitHub](https://github.com/FunsyMe/white-lists-bypass)
+- поддержите финансово прямым переводом TON через [Tonkeeper](https://app.tonkeeper.com/transfer/UQBtJ0n3DVu17q0bIVeNL04HnS4qD6g-hkNLsYI5wWKos4SD)
+
 <div align="center">
     <h1>Подготовка домена и сертификатов</h1>
 </div>
